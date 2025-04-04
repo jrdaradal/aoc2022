@@ -1,7 +1,7 @@
 from utils import * 
 
 # SolutionA:    15  12740
-# SolutionB:    
+# SolutionB:    12  11980
 
 rps = tuple[int,int]
 
@@ -25,6 +25,14 @@ def day02A():
         total += computeGameScore(game)
     print("Total:", total)
 
+def day02B():
+    full = True 
+    mask = {'A': R, 'B': P, 'C': S, 'X': L, 'Y': D, 'Z': W}
+    total = 0 
+    for game in input02(full, mask):
+        total += coerceGameScore(game)
+    print("Total:", total)
+
 def computeGameScore(game: rps) -> int:
     opp, you = game
     score = you 
@@ -34,5 +42,16 @@ def computeGameScore(game: rps) -> int:
         score += W
     return score
 
+def coerceGameScore(cfg: rps) -> int:
+    opp, out = cfg 
+    if out == D:
+        you = opp
+    elif out == W:
+        you = losesTo[opp]
+    elif out == L:
+        you = winsOver[opp]
+    return computeGameScore((opp, you))
+
 if __name__ == '__main__':
-    day02A()
+    # day02A()
+    day02B()
