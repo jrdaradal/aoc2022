@@ -14,7 +14,8 @@ func main() {
 	// Day02B()
 	// Day03A()
 	// Day03B()
-	Day04A()
+	// Day04A()
+	Day04B()
 
 	fmt.Printf("\nTime: %v\n", time.Since(now))
 }
