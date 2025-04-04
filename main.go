@@ -10,7 +10,8 @@ func main() {
 
 	// Day01A()
 	// Day01B()
-	Day02A()
+	// Day02A()
+	Day02B()
 
 	fmt.Printf("\nTime: %v\n", time.Since(now))
 }

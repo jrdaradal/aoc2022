@@ -8,7 +8,7 @@ import (
 )
 
 // SolutionA:	15	12740
-// SolutionB:
+// SolutionB:	12 	11980
 
 type rps = [2]int
 
@@ -51,6 +51,23 @@ func Day02A() {
 	fmt.Println("Total:", total)
 }
 
+func Day02B() {
+	full := true
+	mask := map[string]int{
+		"A": R,
+		"B": P,
+		"C": S,
+		"X": L,
+		"Y": D,
+		"Z": W,
+	}
+	total := 0
+	for _, game := range input02(full, mask) {
+		total += coerceGameScore(game)
+	}
+	fmt.Println("Total:", total)
+}
+
 func computeGameScore(game rps) int {
 	opp, you := game[0], game[1]
 	score := you
@@ -60,4 +77,17 @@ func computeGameScore(game rps) int {
 		score += W
 	}
 	return score
+}
+
+func coerceGameScore(cfg rps) int {
+	opp, out := cfg[0], cfg[1]
+	var you int
+	if out == D {
+		you = opp
+	} else if out == W {
+		you = losesTo[opp]
+	} else if out == L {
+		you = winsOver[opp]
+	}
+	return computeGameScore(rps{opp, you})
 }
