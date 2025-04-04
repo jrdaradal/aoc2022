@@ -50,10 +50,8 @@ func findCommon(line string) rune {
 	for i, char := range line {
 		if i < mid {
 			set[char] = true
-		} else {
-			if _, ok := set[char]; ok {
-				return char
-			}
+		} else if _, ok := set[char]; ok {
+			return char
 		}
 	}
 	return '?'
