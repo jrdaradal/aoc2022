@@ -8,7 +8,8 @@ import (
 func main() {
 	now := time.Now()
 
-	Day01A()
+	// Day01A()
+	Day01B()
 
 	fmt.Printf("\nTime: %v\n", time.Since(now))
 }

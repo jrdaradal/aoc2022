@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/roidaradal/fn"
@@ -9,6 +10,7 @@ import (
 )
 
 // SolutionA: 	24000	70698
+// SolutionB: 	45000	206643
 
 func input01(full bool) []string {
 	lines, _ := io.ReadTextFile(getPath(1, full))
@@ -16,21 +18,37 @@ func input01(full bool) []string {
 }
 
 func Day01A() {
-	lines := input01(true)
-	maxCalories := 0
-	current := 0
-	for _, line := range lines {
+	full := true
+	maxCalories, current := 0, 0
+	for _, line := range input01(full) {
 		if line == "" {
-			if current > maxCalories {
-				maxCalories = current
-			}
+			maxCalories = max(maxCalories, current)
 			current = 0
 		} else {
 			current += fn.ParseInt(line)
 		}
 	}
-	if current > maxCalories {
-		maxCalories = current
-	}
+	maxCalories = max(maxCalories, current)
 	fmt.Println("MaxCalories:", maxCalories)
+}
+
+func Day01B() {
+	full := true
+	top3, current := []int{0, 0, 0}, 0
+	for _, line := range input01(full) {
+		if line == "" {
+			top3 = adjustTop3(top3, current)
+			current = 0
+		} else {
+			current += fn.ParseInt(line)
+		}
+	}
+	top3 = adjustTop3(top3, current)
+	fmt.Println("Total:", top3[0]+top3[1]+top3[2])
+}
+
+func adjustTop3(top3 []int, current int) []int {
+	top3 = append(top3, current)
+	sort.Ints(top3)
+	return top3[1:4]
 }
