@@ -10,11 +10,14 @@ import (
 )
 
 // SolutionA: 	CMZ		HNSNMTLHQ
+// SolutionB: 	MCD		RNLFDJMCT
 
 type config05 struct {
 	stacks [][]rune
 	moves  [][3]int // count, idx1, idx2
 }
+
+type TransferFn = func(int, []rune, []rune) ([]rune, []rune)
 
 func input05(full bool) *config05 {
 	cfg := &config05{
@@ -56,8 +59,12 @@ func input05(full bool) *config05 {
 
 func Day05A() {
 	full := true
-	cfg := input05(full)
-	processMoves(cfg)
+	processMoves(input05(full), transferReverse)
+}
+
+func Day05B() {
+	full := true
+	processMoves(input05(full), transferAsIs)
 }
 
 func parseMove(line string) [3]int {
@@ -67,11 +74,11 @@ func parseMove(line string) [3]int {
 	return [3]int{count, i[0] - 1, i[1] - 1}
 }
 
-func processMoves(cfg *config05) {
+func processMoves(cfg *config05, transferFn TransferFn) {
 	s := cfg.stacks
 	for _, move := range cfg.moves {
 		count, idx1, idx2 := move[0], move[1], move[2]
-		s[idx1], s[idx2] = transfer(count, s[idx1], s[idx2])
+		s[idx1], s[idx2] = transferFn(count, s[idx1], s[idx2])
 	}
 	top := make([]rune, len(s))
 	for i, stack := range s {
@@ -80,9 +87,16 @@ func processMoves(cfg *config05) {
 	fmt.Println("Top:", string(top))
 }
 
-func transfer(count int, s1, s2 []rune) ([]rune, []rune) {
-	move := append([]rune{}, s1[:count]...)
+func transferReverse(count int, s1, s2 []rune) ([]rune, []rune) {
+	move := fn.CopySlice(s1[:count])
 	slices.Reverse(move)
+	n1 := s1[count:]
+	n2 := append(move, s2...)
+	return n1, n2
+}
+
+func transferAsIs(count int, s1, s2 []rune) ([]rune, []rune) {
+	move := fn.CopySlice(s1[:count])
 	n1 := s1[count:]
 	n2 := append(move, s2...)
 	return n1, n2
