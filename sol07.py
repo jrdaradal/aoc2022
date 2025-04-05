@@ -1,6 +1,7 @@
 from utils import *
 
-# SolutionA: 95437  1182909
+# SolutionA: 95437      1182909
+# SolutionB: 24933642   2832508
 
 class Item:
     def __init__(self, name: str, path: str, size: int):
@@ -39,6 +40,20 @@ def day07A():
         if item.isDir and item.size <= limit:
             total += item.size 
     print('Total:', total)
+
+def day07B():
+    full = True 
+    buildFS(input07(full))
+
+    total = 70_000_000 
+    required = 30_000_000 
+    free = total - fs['/'].size 
+    minimum = required - free 
+    best = float('inf')
+    for _, item in fs.items():
+        if item.isDir and item.size >= minimum:
+            best = min(best, item.size)
+    print('Min:', best)
 
 def buildFS(lines: list[str]):
     cwd = None 
@@ -92,4 +107,5 @@ def getFile(name: str, size: int, parent: Item|None) -> tuple[Item, bool]:
     return item, True
 
 if __name__ == '__main__':
-    day07A()
+    # day07A()
+    day07B()
