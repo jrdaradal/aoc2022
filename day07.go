@@ -3,6 +3,7 @@ package main
 import (
 	"cmp"
 	"fmt"
+	"math"
 	"slices"
 	"strings"
 
@@ -11,7 +12,7 @@ import (
 )
 
 // SolutionA: 	95437		1182909
-// SolutionB:
+// SolutionB: 	24933642	2832508
 
 const (
 	cmdCD string = "$ cd"
@@ -27,15 +28,15 @@ type Item struct {
 	path     string
 	parent   *Item
 	children []*Item
-	size     uint
+	size     int
 }
 
 func (i *Item) AddChild(c *Item) {
 	i.children = append(i.children, c)
 }
 
-func (i *Item) ComputeSize() uint {
-	var size uint = 0
+func (i *Item) ComputeSize() int {
+	size := 0
 	for _, child := range i.children {
 		size += child.size
 	}
@@ -64,14 +65,31 @@ func Day07A() {
 	full := true
 	buildFS(input07(full))
 
-	var limit uint = 100_000
-	var total uint = 0
+	limit := 100_000
+	total := 0
 	for _, item := range FS {
 		if item.IsDir() && item.size <= limit {
 			total += item.size
 		}
 	}
 	fmt.Println("Total:", total)
+}
+
+func Day07B() {
+	full := true
+	buildFS(input07(full))
+
+	total := 70_000_000
+	required := 30_000_000
+	free := total - FS["/"].size
+	minimum := required - free
+	best := math.MaxInt
+	for _, item := range FS {
+		if item.IsDir() && item.size >= minimum {
+			best = min(best, item.size)
+		}
+	}
+	fmt.Println("Min:", best)
 }
 
 func buildFS(lines []string) {
@@ -151,7 +169,7 @@ func getFile(name string, size int, parent *Item) (*Item, bool) {
 		path:     path,
 		parent:   parent,
 		children: nil,
-		size:     uint(size),
+		size:     size,
 	}
 	FS[path] = item
 	return item, true
