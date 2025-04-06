@@ -9,6 +9,7 @@ import (
 )
 
 // SolutionA:	21	1785
+// SolutionB:	8	345168
 
 type coords = [2]int
 
@@ -22,6 +23,11 @@ func input08(full bool) [][]int {
 func Day08A() {
 	full := true
 	countVisible(input08(full))
+}
+
+func Day08B() {
+	full := true
+	findBestScore(input08(full))
 }
 
 func countVisible(grid [][]int) {
@@ -92,4 +98,54 @@ func checkColVisible(grid [][]int, visible map[coords]bool, row, col int) {
 	}
 	ok = fn.All(below, isValid)
 	visible[c] = ok
+}
+
+func findBestScore(grid [][]int) {
+	nRows, nCols := len(grid), len(grid[0])
+	best := 0
+	for row := 1; row < nRows-1; row++ {
+		for col := 1; col < nCols-1; col++ {
+			best = max(best, computeScore(grid, row, col))
+		}
+	}
+	fmt.Println("Best:", best)
+}
+
+func computeScore(grid [][]int, row, col int) int {
+	nRows, nCols := len(grid), len(grid[0])
+	value := grid[row][col]
+	// Up
+	n := 0
+	for r := row - 1; r >= 0; r-- {
+		n++
+		if grid[r][col] >= value {
+			break
+		}
+	}
+	// Down
+	s := 0
+	for r := row + 1; r < nRows; r++ {
+		s++
+		if grid[r][col] >= value {
+			break
+		}
+	}
+	// Left
+	w := 0
+	for c := col - 1; c >= 0; c-- {
+		w++
+		if grid[row][c] >= value {
+			break
+		}
+	}
+	// Right
+	e := 0
+	for c := col + 1; c < nCols; c++ {
+		e++
+		if grid[row][c] >= value {
+			break
+		}
+	}
+
+	return n * e * w * s
 }
