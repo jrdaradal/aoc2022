@@ -1,6 +1,7 @@
 from utils import * 
 
 # SolutionA: 13     6339
+# SolutionB: 36     2541
 
 coords = list[int]
 
@@ -26,6 +27,16 @@ def day09A():
         head, tail = moveRope(head, tail, delta, visited)
     print('Visited:', len(visited))
 
+def day09B():
+    full = True 
+    tail = 9 
+    pos = [[0,0] for i in range(tail+1)]
+    visited = set()
+    visited.add(tuple(pos[tail]))
+    for delta in input09(full):
+        pos = moveChain(pos, delta, visited)
+    print('Visited:', len(visited))
+
 def moveRope(head: coords, tail: coords, delta: coords, visited: set) -> tuple[coords, coords]:
     steps, idx, factor = unpackDelta(delta)
     for i in range(steps):
@@ -34,6 +45,17 @@ def moveRope(head: coords, tail: coords, delta: coords, visited: set) -> tuple[c
             tail = follow(head, tail)
             visited.add(tuple(tail))
     return head, tail
+
+def moveChain(pos: list[coords], delta: coords, visited: set) -> list[coords]:
+    tail = len(pos)-1
+    steps, idx, factor = unpackDelta(delta) 
+    for n in range(steps):
+        pos[0][idx] += 1 * factor 
+        for i in range(1,tail+1):
+            if not isAdjacent(pos[i-1], pos[i]):
+                pos[i] = follow(pos[i-1], pos[i])
+        visited.add(tuple(pos[tail]))
+    return pos
 
 def unpackDelta(delta: coords) -> tuple[int, int, int]:
     dy, dx = delta 
@@ -65,4 +87,5 @@ def follow(c1: coords, c2: coords) -> coords:
     return c2
 
 if __name__ == '__main__':
-    day09A()
+    # day09A()
+    day09B()
